@@ -1,0 +1,26 @@
+version: "3"
+services:
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx:/etc/nginx/conf.d  
+      - ./www:/var/www
+    ports:
+      - "80:80"
+    working_dir: /var/www    
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./www:/var/www    
+    ports:
+      - "9000:9000"
+    healthcheck:
+      test: ["CMD", "curl", "-sS", "http://nginx | grep works"]
+      interval: 5s
+      timeout: 10s
+      retries: 3
+    working_dir: /var/www    
+
